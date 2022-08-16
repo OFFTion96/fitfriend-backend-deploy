@@ -1,5 +1,5 @@
 const express = require('express')
-const data = require('C:\\Users\\apisa\\Desktop\\nodejs\\final-project-backend\\data.js')
+
 const router = express.Router()
 const UsersModel = require('../models/users')
 
