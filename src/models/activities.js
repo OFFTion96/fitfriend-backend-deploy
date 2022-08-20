@@ -2,24 +2,28 @@ const mongoose = require('mongoose')
 
 const activitiesSchema = new mongoose.Schema(
     {
+      username_id:{
+        reqiured:true,
+        type:String
+      },
+      username:{
+          required:true,
+          type:String,
+        },
         sport: {
             required: true,
             type: String,
           },
-          date_add: {
+          date_post: {
             type: Date,
             required: true,
           },
-          date_activites: {
+          date_activites_start: {
             type: Date,
             required: true,
           },
-          time_start: {
+          date_activites_end:{
             type: Date,
-            required: true,
-          },
-          time_end: {
-            type: Date, 
             required: true,
           },
           location: {
