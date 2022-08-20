@@ -40,9 +40,6 @@ router.delete('/:acivityid',async(req,res,next)=>{
     res.send("delete done")
 })
 
-const newFindUser = {
-    "-id":findUser._id,
-    
-}
+
 
 module.exports = router
