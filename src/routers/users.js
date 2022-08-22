@@ -2,7 +2,7 @@ const express = require('express')
 
 const router = express.Router()
 const UsersModel = require('../models/users')
-
+const bcrypt = require('bcryptjs')
 router.get('/',async (req,res)=>{
     const users = await UsersModel.find();
     res.send(users.map((users)=> users.toJSON()))
@@ -10,9 +10,9 @@ router.get('/',async (req,res)=>{
 //User Profile (get)
 router.get('/:user/information',async (req,res)=>{
     console.log(req.params)
-    const findUser = await UsersModel.find({username:req.params.user})
+    const findUser = await UsersModel.findOne({_id:ObjectId(req.params.user)})
+
     res.send(findUser)
-    
 })
 
 router.post('/', async (req,res)=>{
@@ -27,6 +27,85 @@ router.post('/', async (req,res)=>{
     return res.send(users.toJSON())
     
 })
+//login
+router.post('/login',async (req,res)=>{
+    try {
+        const {username,password} = req.body
+        const loginResponse = {
+            "status":"none",
+            "username_id":"",
+            "username":""
+        }
+        
+
+        if(!(username && password)){
+            res.status(400).send("input is required")
+        }
+        
+        const user = await UsersModel.findOne({username})
+        console.log(user)
+        console.log("user is ",username)
+        console.log("password is",password)
+   
+        if (user && (await bcrypt.compareSync(password,user.password))){
+       
+
+            loginResponse.status = "OK"
+            loginResponse.username_id = user._id
+            loginResponse.username = user.username
+            res.status(200).json(loginResponse)
+            console.log("sucess")
+
+        } else {
+            loginResponse.status = "none"
+            console.log("no User")
+            res.status(401).json(loginResponse)
+           
+        }
+      
+        
+
+    } catch(err){
+        console.log("faile")
+        console.log(err)
+        res.status(401).json("catch")
+        
+    }
+   
+
+    }
+)
+
+//register
+router.post ('/register', async (req, res) => {
+    // console.log (req.body);
+    // res.send ("test");
+    const {username,password,age,weight,height,bmi,user_photo} = req.body
+    if (!(username && password && age && weight && height && bmi && user_photo)){
+        res.status(400).send("not input")
+    }
+    const oldUser = await UsersModel.findOne({username:username})
+
+    if(oldUser){
+        res.status(409).send("use Already")
+    } else {
+        const newUser = await new UsersModel (req.body);
+        const validateResult = newUser.validateSync ();
+    
+        if (validateResult) {
+            return res.status(404).send (validateResult)
+        }
+
+        const salt = await bcrypt.genSaltSync(10);
+        newUser.password = await bcrypt.hashSync(newUser.password, salt);
+
+        await newUser.save ();
+        console.log (newUser);
+        res.send(newUser);
+    }
+
+});
+
 
 
 
