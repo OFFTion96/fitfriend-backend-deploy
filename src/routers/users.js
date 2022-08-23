@@ -39,7 +39,7 @@ router.post('/', async (req,res)=>{
 })
 //login
 router.post('/login',async (req,res)=>{
-    
+        try{
         const {username,password} = req.body
         const loginResponse = {
             "status":"none",
@@ -53,9 +53,7 @@ router.post('/login',async (req,res)=>{
         }
         
         const user = await UsersModel.findOne({username})
-        console.log(user)
-        console.log("user is ",username)
-        console.log("password is",password)
+
    
         if (user && (await bcrypt.compareSync(password,user.password))){
        
@@ -65,17 +63,22 @@ router.post('/login',async (req,res)=>{
             loginResponse.username = user.username
             loginResponse.user_photo = user.user_photo
             res.status(200).json(loginResponse)
-            console.log("sucess")
+      
 
+        } else {
+            loginResponse.status = "none"
+            res.status(400).json(loginResponse)
         }
+    }catch(err){
+        res.status(400).json(err)
+    }
 
     }
 )
 
 //register
 router.post ('/register', async (req, res) => {
-    // console.log (req.body);
-    // res.send ("test");
+
    
     const {username,password,age,weight,height,bmi,user_photo} = req.body
     if (!(username && password && age && weight && height && bmi && user_photo)){
@@ -97,7 +100,7 @@ router.post ('/register', async (req, res) => {
         newUser.password = await bcrypt.hashSync(newUser.password, salt);
 
         await newUser.save ();
-        console.log (newUser);
+      
         res.send(newUser);
     }
     

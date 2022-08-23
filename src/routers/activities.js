@@ -28,7 +28,7 @@ router.get('/',async (req,res,next)=>{
 
   
     const dayPicker = req.query.date
-    console.log(dayPicker)
+    
     if (dayPicker === undefined) {
       const activities = await activitiesModel.find({}).sort({date_post: -1});
       res.send(activities);
@@ -36,10 +36,9 @@ router.get('/',async (req,res,next)=>{
     } else {
       var dateEnd = new Date(dayPicker)
       dateEnd.setHours(30, 59, 59)
-      console.log(dateEnd)
+      
       var dateStart = new Date(dayPicker)
-      console.log(dateStart)
-      console.log("b")
+   
       const activities = await activitiesModel.find({
         $and:
           [{
@@ -63,9 +62,7 @@ router.get('/:user',async (req,res,next)=>{
     var date_start = new Date(myQuery.date_start)
     var date_end = new Date(myQuery.date_end)
     date_start.setHours(30,59,59)
-  
-    // console.log(date_start)
-    // console.log(date_end)
+ 
     const activities = await activitiesModel.find({$and:[{date_post:{$lte:date_start}},{date_post:{$gt:date_end}},{"username_id":myParams}]}).sort ( { date_post: -1 } );
     res.send(activities.map((activities)=> activities.toJSON()))
     
@@ -74,10 +71,10 @@ router.get('/:user',async (req,res,next)=>{
 router.delete('/:acivityid',async(req,res,next)=>{
    
     const myParams = req.params.acivityid
-    console.log(myParams)
+ 
     await activitiesModel.deleteOne({_id:ObjectId(myParams),function (err){
-        if (!err) {console.log("delete done")}
-        else {console.log("not delete")}
+        if (!err) {}
+        else {}
     }})
     res.send("delete done")
 
@@ -87,7 +84,7 @@ router.get('/activity/:sport',async (req, res, next) => {
     const { sport } = req.params
     let date = new Date()
     date.setDate(date.getDate() - 1)
-    console.log(date)
+
    
       const filterSport = await activitiesModel.aggregate([
         { "$match": { date_post: { $gte: date } } },
@@ -105,7 +102,7 @@ router.get('/activity/:sport',async (req, res, next) => {
     const { sport } = req.params
     let date = new Date()
     date.setDate(date.getDate() - 1)
-    console.log(date)
+   
     try {
       const countNumber = await activitiesModel.aggregate([
         { "$match": { date_post: { $gte: date } } },
@@ -115,7 +112,7 @@ router.get('/activity/:sport',async (req, res, next) => {
       ])
   
       if (countNumber.length > 0) {
-        console.log(typeof countNumber[0].count.toString())
+      
         res.status(200).send(countNumber[0].count.toString());
       } else {
         return res.status(200).send("0");
