@@ -1,3 +1,2 @@
-const config = require('./config')
-
-console.log(config)
+require('dotenv').config()
+console.log(process.env)

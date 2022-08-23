@@ -9,7 +9,7 @@ const usersSchema = new mongoose.Schema(
         weight:{type:Number},
         height:{type:Number},
         bmi:{type:Number}, 
-        user_photo: {type: String}
+        user_photo: {type: String }
     }
 )
 

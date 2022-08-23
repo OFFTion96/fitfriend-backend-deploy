@@ -1,5 +1,5 @@
 const express = require('express')
-
+const ObjectId = require('mongoose').Types.ObjectId; 
 const router = express.Router()
 const UsersModel = require('../models/users')
 const bcrypt = require('bcryptjs')
@@ -9,15 +9,25 @@ router.get('/',async (req,res)=>{
 })
 //User Profile (get)
 router.get('/:user/information',async (req,res)=>{
-    console.log(req.params)
-    const findUser = await UsersModel.findOne({_id:ObjectId(req.params.user)})
 
-    res.send(findUser)
+    
+    const findUser = await UsersModel.findOne({_id:ObjectId(req.params.user)})
+    newFindUser = {
+        "_id":findUser._id,
+        "username":findUser.username,
+        "age":findUser.age,
+        "weight":findUser.weight,
+        "height":findUser.height,
+        "bmi":findUser.bmi,
+        "user_photo":findUser.user_photo
+    }
+    res.send(newFindUser)
+   
 })
 
 router.post('/', async (req,res)=>{
-    console.log(req.body)
-    // res.status(400).send("test")
+  
+    
     const users = new UsersModel(req.body);
     const validateResult = users.validateSync();
     if(validateResult){
@@ -29,7 +39,7 @@ router.post('/', async (req,res)=>{
 })
 //login
 router.post('/login',async (req,res)=>{
-    try {
+    
         const {username,password} = req.body
         const loginResponse = {
             "status":"none",
@@ -53,25 +63,11 @@ router.post('/login',async (req,res)=>{
             loginResponse.status = "OK"
             loginResponse.username_id = user._id
             loginResponse.username = user.username
+            loginResponse.user_photo = user.user_photo
             res.status(200).json(loginResponse)
             console.log("sucess")
 
-        } else {
-            loginResponse.status = "none"
-            console.log("no User")
-            res.status(401).json(loginResponse)
-           
         }
-      
-        
-
-    } catch(err){
-        console.log("faile")
-        console.log(err)
-        res.status(401).json("catch")
-        
-    }
-   
 
     }
 )
@@ -80,6 +76,7 @@ router.post('/login',async (req,res)=>{
 router.post ('/register', async (req, res) => {
     // console.log (req.body);
     // res.send ("test");
+   
     const {username,password,age,weight,height,bmi,user_photo} = req.body
     if (!(username && password && age && weight && height && bmi && user_photo)){
         res.status(400).send("not input")
@@ -103,7 +100,7 @@ router.post ('/register', async (req, res) => {
         console.log (newUser);
         res.send(newUser);
     }
-
+    
 });
 
 

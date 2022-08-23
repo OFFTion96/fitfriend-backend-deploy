@@ -38,6 +38,10 @@ const activitiesSchema = new mongoose.Schema(
             type: String,
             required: true,
           },
+          user_photo: {
+            type: String,
+            required: true,
+          },
 
     }
 )
