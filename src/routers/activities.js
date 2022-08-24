@@ -26,7 +26,7 @@ router.post('/', async (req,res,next)=>{
 
 router.get('/',async (req,res,next)=>{
 
-    console.log(req.query.date)
+   
     const dayPicker = req.query.date
     
     if (dayPicker === undefined) {
@@ -36,10 +36,9 @@ router.get('/',async (req,res,next)=>{
     } else {
       var dateEnd = new Date(dayPicker)
       dateEnd.setHours(30, 59, 59)
-      console.log('yes')
+    
       var dateStart = new Date(dayPicker)
-      console.log(dateStart)
-      console.log(dateEnd)
+ 
       const activities = await activitiesModel.find({
         $and:
           [{
@@ -48,7 +47,7 @@ router.get('/',async (req,res,next)=>{
           },
           { "date_post": { $gte: (dateStart) } }]
       }).sort({date_post: -1});
-      console.log(activities)
+     
       res.send(activities);
   
     }
@@ -128,17 +127,17 @@ router.get('/activity/:sport',async (req, res, next) => {
   )
 
 router.get("/get/:activityId", async (req, res) => {
-  console.log(req.params.activityId);
+
   const findActivity = await activitiesModel.findOne({
     _id: ObjectId(req.params.activityId)
   });
-  console.log(findActivity);
+
   res.send(findActivity);
   // res.status(newFindActivity);
 });
 
 router.put("/edit/:activityId", async (req, res) => {
-  console.log(req.params.activityId);
+
   const editActivity = await activitiesModel.updateOne(
     { _id: ObjectId(req.params.activityId) },
     { $set: req.body }
