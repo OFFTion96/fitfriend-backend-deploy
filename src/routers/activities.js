@@ -125,4 +125,25 @@ router.get('/activity/:sport',async (req, res, next) => {
   }
   )
 
+router.get("/get/:activityId", async (req, res) => {
+  console.log(req.params.activityId);
+  const findActivity = await activitiesModel.findOne({
+    _id: ObjectId(req.params.activityId)
+  });
+  console.log(findActivity);
+  res.send(findActivity);
+  // res.status(newFindActivity);
+});
+
+router.put("/edit/:activityId", async (req, res) => {
+  console.log(req.params.activityId);
+  const editActivity = await activitiesModel.updateOne(
+    { _id: ObjectId(req.params.activityId) },
+    { $set: req.body }
+  );
+  res.send("already update Activity");
+
+});
+
+
 module.exports = router
