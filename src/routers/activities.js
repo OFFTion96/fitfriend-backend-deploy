@@ -26,7 +26,7 @@ router.post('/', async (req,res,next)=>{
 
 router.get('/',async (req,res,next)=>{
 
-  
+    console.log(req.query.date)
     const dayPicker = req.query.date
     
     if (dayPicker === undefined) {
@@ -36,17 +36,19 @@ router.get('/',async (req,res,next)=>{
     } else {
       var dateEnd = new Date(dayPicker)
       dateEnd.setHours(30, 59, 59)
-      
+      console.log('yes')
       var dateStart = new Date(dayPicker)
-   
+      console.log(dateStart)
+      console.log(dateEnd)
       const activities = await activitiesModel.find({
         $and:
           [{
             "date_post":
-              { $lt: (dateEnd) }
+              { $lte: (dateEnd) }
           },
-          { "date_post": { $gt: (dateStart) } }]
+          { "date_post": { $gte: (dateStart) } }]
       }).sort({date_post: -1});
+      console.log(activities)
       res.send(activities);
   
     }
